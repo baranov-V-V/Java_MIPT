@@ -1,0 +1,29 @@
+digraph "mipt.baranov:homework2:jar:1.0-SNAPSHOT" { 
+	"mipt.baranov:homework2:jar:1.0-SNAPSHOT" -> "org.junit.jupiter:junit-jupiter:jar:5.7.0:test" ; 
+	"mipt.baranov:homework2:jar:1.0-SNAPSHOT" -> "org.assertj:assertj-core:jar:3.19.0:test" ; 
+	"mipt.baranov:homework2:jar:1.0-SNAPSHOT" -> "com.approvaltests:approvaltests:jar:9.5.0:test" ; 
+	"org.junit.jupiter:junit-jupiter:jar:5.7.0:test" -> "org.junit.jupiter:junit-jupiter-api:jar:5.7.0:test" ; 
+	"org.junit.jupiter:junit-jupiter:jar:5.7.0:test" -> "org.junit.jupiter:junit-jupiter-params:jar:5.7.0:test" ; 
+	"org.junit.jupiter:junit-jupiter:jar:5.7.0:test" -> "org.junit.jupiter:junit-jupiter-engine:jar:5.7.0:test" ; 
+	"org.junit.jupiter:junit-jupiter-api:jar:5.7.0:test" -> "org.apiguardian:apiguardian-api:jar:1.1.0:test" ; 
+	"org.junit.jupiter:junit-jupiter-api:jar:5.7.0:test" -> "org.opentest4j:opentest4j:jar:1.2.0:test" ; 
+	"org.junit.jupiter:junit-jupiter-api:jar:5.7.0:test" -> "org.junit.platform:junit-platform-commons:jar:1.7.0:test" ; 
+	"org.junit.jupiter:junit-jupiter-engine:jar:5.7.0:test" -> "org.junit.platform:junit-platform-engine:jar:1.7.0:test" ; 
+	"com.approvaltests:approvaltests:jar:9.5.0:test" -> "com.approvaltests:approvaltests-util:jar:9.5.0:test" ; 
+	"com.approvaltests:approvaltests-util:jar:9.5.0:test" -> "com.sun.mail:javax.mail:jar:1.6.2:test" ; 
+	"com.sun.mail:javax.mail:jar:1.6.2:test" -> "javax.activation:activation:jar:1.1:test" ; 
+ } digraph "mipt.baranov:homework2:jar:1.0-SNAPSHOT" { 
+	"mipt.baranov:homework2:jar:1.0-SNAPSHOT" -> "org.junit.jupiter:junit-jupiter:jar:5.7.0:test" ; 
+	"mipt.baranov:homework2:jar:1.0-SNAPSHOT" -> "org.assertj:assertj-core:jar:3.19.0:test" ; 
+	"mipt.baranov:homework2:jar:1.0-SNAPSHOT" -> "com.approvaltests:approvaltests:jar:9.5.0:test" ; 
+	"org.junit.jupiter:junit-jupiter:jar:5.7.0:test" -> "org.junit.jupiter:junit-jupiter-api:jar:5.7.0:test" ; 
+	"org.junit.jupiter:junit-jupiter:jar:5.7.0:test" -> "org.junit.jupiter:junit-jupiter-params:jar:5.7.0:test" ; 
+	"org.junit.jupiter:junit-jupiter:jar:5.7.0:test" -> "org.junit.jupiter:junit-jupiter-engine:jar:5.7.0:test" ; 
+	"org.junit.jupiter:junit-jupiter-api:jar:5.7.0:test" -> "org.apiguardian:apiguardian-api:jar:1.1.0:test" ; 
+	"org.junit.jupiter:junit-jupiter-api:jar:5.7.0:test" -> "org.opentest4j:opentest4j:jar:1.2.0:test" ; 
+	"org.junit.jupiter:junit-jupiter-api:jar:5.7.0:test" -> "org.junit.platform:junit-platform-commons:jar:1.7.0:test" ; 
+	"org.junit.jupiter:junit-jupiter-engine:jar:5.7.0:test" -> "org.junit.platform:junit-platform-engine:jar:1.7.0:test" ; 
+	"com.approvaltests:approvaltests:jar:9.5.0:test" -> "com.approvaltests:approvaltests-util:jar:9.5.0:test" ; 
+	"com.approvaltests:approvaltests-util:jar:9.5.0:test" -> "com.sun.mail:javax.mail:jar:1.6.2:test" ; 
+	"com.sun.mail:javax.mail:jar:1.6.2:test" -> "javax.activation:activation:jar:1.1:test" ; 
+ } 
