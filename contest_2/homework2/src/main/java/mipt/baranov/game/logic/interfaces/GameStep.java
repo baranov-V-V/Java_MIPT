@@ -6,4 +6,6 @@ public interface GameStep {
     Position getStartPos();
 
     Position getEndPos();
+
+
 }

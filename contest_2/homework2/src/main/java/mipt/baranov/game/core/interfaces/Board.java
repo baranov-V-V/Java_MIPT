@@ -4,7 +4,7 @@ import mipt.baranov.game.primitives.classes.Position;
 import mipt.baranov.game.primitives.interfaces.BoardFigure;
 
 public interface Board<T extends BoardFigure> {
-    void addFigure(Position pos, T figure);
+    void addFigure(T figure);
 
     void deleteFigure(Position position);
 
