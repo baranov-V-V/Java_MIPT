@@ -1,7 +1,6 @@
 package mipt.baranov.game.core.classes;
 
-import mipt.baranov.game.logic.classes.CheckersGameStep;
-import mipt.baranov.game.logic.interfaces.GameStep;
+import mipt.baranov.game.logic.steps.CheckersGameStep;
 
 import java.util.ArrayDeque;
 import java.util.Collection;

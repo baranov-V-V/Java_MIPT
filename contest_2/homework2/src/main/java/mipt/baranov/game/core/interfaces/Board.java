@@ -1,7 +1,7 @@
 package mipt.baranov.game.core.interfaces;
 
-import mipt.baranov.game.primitives.classes.Position;
-import mipt.baranov.game.primitives.interfaces.BoardFigure;
+import mipt.baranov.game.util.Position;
+import mipt.baranov.game.entities.BoardFigure;
 
 public interface Board<T extends BoardFigure> {
     void addFigure(T figure);

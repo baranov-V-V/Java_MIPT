@@ -1,4 +1,4 @@
-package mipt.baranov.game.primitives.classes;
+package mipt.baranov.game.util;
 
 public class Position {
     private int coord_x = 0;

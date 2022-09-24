@@ -6,11 +6,11 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 
-public class StepsInputParser implements Closeable {
+public class StepsInput implements Closeable {
     private final Scanner scanner;
     private List<String> black_steps;
 
-    public StepsInputParser(InputStream input_stream, Charset charset) {
+    public StepsInput(InputStream input_stream, Charset charset) {
         scanner = new Scanner(input_stream, charset);
     }
 
@@ -19,15 +19,10 @@ public class StepsInputParser implements Closeable {
         scanner.close();
     }
 
-    public String[] readStepPair() {
-        return scanner.nextLine().split(" ");
-    }
-
     public List<String> readAllSteps() {
         List<String> steps = new ArrayList<>();
         while (scanner.hasNext()) {
-            String[] encoded_steps = scanner.nextLine().split(" ");
-            Collections.addAll(steps, encoded_steps);
+            steps.add(scanner.nextLine());
         }
 
         return steps;

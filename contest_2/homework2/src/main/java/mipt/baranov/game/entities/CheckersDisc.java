@@ -1,6 +1,6 @@
-package mipt.baranov.game.primitives.classes;
+package mipt.baranov.game.entities;
 
-import mipt.baranov.game.primitives.interfaces.BoardFigure;
+import mipt.baranov.game.util.Position;
 import mipt.baranov.game.util.Boards;
 import mipt.baranov.game.util.Color;
 

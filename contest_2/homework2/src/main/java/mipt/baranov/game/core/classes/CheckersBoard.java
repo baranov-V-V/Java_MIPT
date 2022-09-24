@@ -1,7 +1,7 @@
 package mipt.baranov.game.core.classes;
 
-import mipt.baranov.game.primitives.classes.CheckersDisc;
-import mipt.baranov.game.primitives.classes.Position;
+import mipt.baranov.game.entities.CheckersDisc;
+import mipt.baranov.game.util.Position;
 
 import java.util.*;
 

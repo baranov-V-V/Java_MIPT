@@ -1,8 +1,7 @@
-package mipt.baranov.game.logic.classes;
+package mipt.baranov.game.logic.steps;
 
-import mipt.baranov.game.Game;
-import mipt.baranov.game.logic.interfaces.GameStep;
-import mipt.baranov.game.primitives.classes.Position;
+import mipt.baranov.game.logic.steps.GameStep;
+import mipt.baranov.game.util.Position;
 import mipt.baranov.game.util.Boards;
 import mipt.baranov.game.util.Color;
 
