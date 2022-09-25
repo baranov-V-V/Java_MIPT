@@ -1,8 +1,8 @@
 package mipt.baranov.entities;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import lombok.NonNull;
+import org.json.JSONObject;
 
 @Data
 public class Ticket {
@@ -10,5 +10,5 @@ public class Ticket {
     private final @NonNull String book_ref;
     private final @NonNull String passenger_id;
     private final @NonNull String passenger_name;
-    private final JsonNode contact_data;
+    private final JSONObject contact_data;
 }

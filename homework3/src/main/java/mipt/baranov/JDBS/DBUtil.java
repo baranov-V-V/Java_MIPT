@@ -12,15 +12,6 @@ import java.util.stream.Stream;
 
 public class DBUtil {
     /**
-     * Loads all lines from csv file into table with same name as file
-     * @param jdbc
-     * @param path_to_table
-     */
-    public static void loadCSVTable(JdbcTemplate jdbc, Path path_to_table) {
-
-    }
-
-    /**
      * executes sql file
      * @param jdbc
      * @param path_to_file

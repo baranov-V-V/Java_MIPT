@@ -6,7 +6,7 @@ create table aircrafts (
 );
 
 create table airports (
-    airport_code CHAR(3)         not null,
+    airport_code VARCHAR(3)      not null,
     airport_name JSON            not null,
     city         JSON            not null,
     coordinates  GEOMETRY(POINT) not null,
@@ -26,7 +26,6 @@ create table bookings (
     book_ref     VARCHAR(6)               not null,
     book_date    TIMESTAMP WITH TIME ZONE not null,
     total_amount NUMERIC(10,2)            not null
-
 );
 
 create table flights (
