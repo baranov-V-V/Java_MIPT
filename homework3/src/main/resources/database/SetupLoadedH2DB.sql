@@ -2,15 +2,15 @@ create table aircrafts (
     aircraft_code VARCHAR(3) not null,
     model         JSON       not null,
     range         INTEGER    not null
-) as select * from csvread('src/main/resources/database/airtrans/aircrafts.csv');
+) as select * from csvread('src/main/resources/database/airtrans/aircrafts_data.csv');
 
 create table airports (
     airport_code VARCHAR(3)      not null,
     airport_name JSON            not null,
     city         JSON            not null,
-    coordinates  GEOMETRY(POINT) not null,
+    coordinates  GEOMETRY(POINT, 100) not null,
     timezone     VARCHAR(1024)   not null
-) as select * from csvread('src/main/resources/database/airtrans/airports.csv');
+) as select * from csvread('src/main/resources/database/airtrans/airports_data.csv');
 
 create table boarding_passes (
     ticket_no   VARCHAR(13) not null,
