@@ -2,7 +2,6 @@ create table aircrafts (
     aircraft_code VARCHAR(3) not null,
     model         JSON       not null,
     range         INTEGER    not null
-
 );
 
 create table airports (
@@ -11,7 +10,6 @@ create table airports (
     city         JSON            not null,
     coordinates  GEOMETRY(POINT) not null,
     timezone     VARCHAR(1024)   not null
-
 );
 
 create table boarding_passes (
@@ -19,7 +17,6 @@ create table boarding_passes (
     flight_id   INTEGER     not null,
     boarding_no INTEGER     not null,
     seat_no     VARCHAR(4)  not null
-
 );
 
 create table bookings (
@@ -39,14 +36,12 @@ create table flights (
     aircraft_code       VARCHAR(3)               not null,
     actual_departure    TIMESTAMP WITH TIME ZONE
     actual_arrival      TIMESTAMP WITH TIME ZONE
-
 );
 
 create table seats (
     aircraft_code   VARCHAR(3)  not null,
     seat_no         VARCHAR(4)  not null,
     fare_conditions VARCHAR(10) not null
-
 );
 
 create table ticket_flights (
@@ -54,7 +49,6 @@ create table ticket_flights (
     flight_id       INTEGER       not null,
     fare_conditions varchar(10)   not null,
     amount          NUMERIC(10,2) not null
-
 );
 
 create table tickets (
@@ -63,5 +57,4 @@ create table tickets (
     passenger_id   VARCHAR(20)    not null,
     passenger_name VARCHAR(1024)  not null,
     contact_data   JSON
-
 );

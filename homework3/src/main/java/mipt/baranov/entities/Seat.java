@@ -5,7 +5,7 @@ import lombok.NonNull;
 
 @Data
 public class Seat {
-    private final @NonNull String aircraft_code;
-    private final @NonNull String seat_no;
-    private final @NonNull String fare_condition;
+    private final @NonNull String aircraftCode;
+    private final @NonNull String seatNo;
+    private final @NonNull String fareCondition;
 }

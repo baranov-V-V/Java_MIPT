@@ -6,9 +6,9 @@ import org.json.JSONObject;
 
 @Data
 public class Ticket {
-    private final @NonNull String ticket_no;
-    private final @NonNull String book_ref;
-    private final @NonNull String passenger_id;
-    private final @NonNull String passenger_name;
-    private final JSONObject contact_data;
+    private final @NonNull String ticketNo;
+    private final @NonNull String bookRef;
+    private final @NonNull String passengerId;
+    private final @NonNull String passengerName;
+    private final JSONObject contactData;
 }

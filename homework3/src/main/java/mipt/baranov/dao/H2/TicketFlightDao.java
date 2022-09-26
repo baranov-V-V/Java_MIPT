@@ -3,10 +3,8 @@ package mipt.baranov.dao.H2;
 import lombok.AllArgsConstructor;
 import mipt.baranov.JDBS.JdbcTemplate;
 import mipt.baranov.dao.Dao;
-import mipt.baranov.entities.Airport;
-import mipt.baranov.entities.BoardingPass;
-import mipt.baranov.util.Point;
-import mipt.baranov.util.sql.H2.Converters;
+import mipt.baranov.entities.Ticket;
+import mipt.baranov.entities.TicketFlight;
 import org.json.JSONObject;
 
 import java.sql.ResultSet;
@@ -14,19 +12,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
-public class BoardingPassDao implements Dao<BoardingPass> {
+public class TicketFlightDao implements Dao<TicketFlight> {
     private final JdbcTemplate jdbc;
 
     @Override
-    public void saveAll(Collection<BoardingPass> entities) throws SQLException {
-        jdbc.executePreparedStatement("insert into boarding_passes(ticket_no, flight_id, boarding_no, seat_no) values (?, ?, ?, ?)", statement -> {
-            for (BoardingPass entity : entities) {
+    public void saveAll(Collection<TicketFlight> entities) throws SQLException {
+        jdbc.executePreparedStatement("insert into ticket_flights(ticket_no, " +
+                "flight_id, " +
+                "fare_conditions, " +
+                "amount) values (?, ?, ?, ?)", statement -> {
+            for (TicketFlight entity : entities) {
                 statement.setString(1, entity.getTicketNo());
                 statement.setInt(2, entity.getFlightId());
-                statement.setInt(3, entity.getBoardingNo());
-                statement.setString(4, entity.getSeatNo());
+                statement.setString(3, entity.getFareConditions());
+                statement.setDouble(4, entity.getAmount());
                 statement.addBatch();
             }
             statement.executeBatch();
@@ -34,8 +36,8 @@ public class BoardingPassDao implements Dao<BoardingPass> {
     }
 
     @Override
-    public List<BoardingPass> getAll() throws SQLException {
-        List<BoardingPass> entities = new ArrayList<>();
+    public List<TicketFlight> getAll() throws SQLException {
+        List<TicketFlight> entities = new ArrayList<>();
         jdbc.executeStatement(statement -> {
             ResultSet resultSet = statement.executeQuery("select * from airports");
             while (resultSet.next()) {
@@ -45,12 +47,12 @@ public class BoardingPassDao implements Dao<BoardingPass> {
         return entities;
     }
 
-    private BoardingPass createEntity(ResultSet set) throws SQLException {
-        return new BoardingPass(
+    private TicketFlight createEntity(ResultSet set) throws SQLException {
+        return new TicketFlight(
                 set.getString(1),
                 set.getInt(2),
-                set.getInt(3),
-                set.getString(4)
+                set.getString(3),
+                set.getDouble(4)
         );
     }
 }

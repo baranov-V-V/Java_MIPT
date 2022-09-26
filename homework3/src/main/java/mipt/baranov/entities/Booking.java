@@ -7,7 +7,7 @@ import java.time.ZonedDateTime;
 
 @Data
 public class Booking {
-    private final String bool_ref;
-    private @NonNull ZonedDateTime book_date;
-    private double total_amount;
+    private final String boolRef;
+    private final @NonNull ZonedDateTime bookDate;
+    private final double totalAmount;
 }

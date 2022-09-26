@@ -24,8 +24,8 @@ public class AirportDao implements Dao<Airport> {
     public void saveAll(Collection<Airport> entities) throws SQLException {
         jdbc.executePreparedStatement("insert into airports(airport_code, airport_name, city, coordinates, timezone) values (?, ?, ?, ?, ?)", statement -> {
             for (Airport entity : entities) {
-                statement.setString(1, entity.getAirport_code());
-                statement.setString(2, entity.getAirport_name().toString());
+                statement.setString(1, entity.getAirportCode());
+                statement.setString(2, entity.getAirportName().toString());
                 statement.setString(3, entity.getCity().toString());
                 statement.setString(4, Converters.pointToString(entity.getCoordinates()));
                 statement.setString(5, entity.getTimezone());
