@@ -21,5 +21,6 @@ public class DBUtil {
             final String sql_commands = lines.collect(Collectors.joining("\n"));
             jdbc.executeStatement(statement -> {statement.execute(sql_commands);} );
         }
+        System.out.println("Working!");
     }
 }

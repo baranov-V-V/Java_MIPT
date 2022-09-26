@@ -34,7 +34,7 @@ create table flights (
     arrival_airport     VARCHAR(3)               not null,
     status              VARCHAR(20)              not null,
     aircraft_code       VARCHAR(3)               not null,
-    actual_departure    TIMESTAMP WITH TIME ZONE
+    actual_departure    TIMESTAMP WITH TIME ZONE,
     actual_arrival      TIMESTAMP WITH TIME ZONE
 );
 
