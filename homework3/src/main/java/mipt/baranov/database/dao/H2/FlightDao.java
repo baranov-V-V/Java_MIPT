@@ -1,13 +1,12 @@
-package mipt.baranov.dao.H2;
+package mipt.baranov.database.dao.H2;
 
 import lombok.AllArgsConstructor;
-import mipt.baranov.JDBS.JdbcTemplate;
-import mipt.baranov.dao.Dao;
+import mipt.baranov.database.JDBS.JdbcTemplate;
+import mipt.baranov.database.dao.Dao;
 import mipt.baranov.entities.Flight;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +53,7 @@ public class FlightDao implements Dao<Flight> {
     public List<Flight> getAll() throws SQLException {
         List<Flight> entities = new ArrayList<>();
         jdbc.executeStatement(statement -> {
-            ResultSet resultSet = statement.executeQuery("select * from airports");
+            ResultSet resultSet = statement.executeQuery("select * from flights");
             while (resultSet.next()) {
                 entities.add(createEntity(resultSet));
             }

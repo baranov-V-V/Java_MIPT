@@ -1,6 +1,8 @@
-package mipt.baranov.JDBS;
+package mipt.baranov.database.connection;
 
 import lombok.NoArgsConstructor;
+import mipt.baranov.database.JDBS.JdbcTemplate;
+import mipt.baranov.database.connection.DBConnector;
 import org.h2.jdbcx.JdbcConnectionPool;
 
 @NoArgsConstructor

@@ -1,9 +1,8 @@
-package mipt.baranov.dao.H2;
+package mipt.baranov.database.dao.H2;
 
 import lombok.AllArgsConstructor;
-import mipt.baranov.JDBS.JdbcTemplate;
-import mipt.baranov.dao.Dao;
-import mipt.baranov.entities.Aircraft;
+import mipt.baranov.database.JDBS.JdbcTemplate;
+import mipt.baranov.database.dao.Dao;
 import mipt.baranov.entities.Airport;
 import mipt.baranov.util.Point;
 import mipt.baranov.util.sql.H2.Converters;
@@ -11,7 +10,6 @@ import org.json.JSONObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

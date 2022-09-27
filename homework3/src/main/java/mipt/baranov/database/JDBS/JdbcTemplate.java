@@ -1,4 +1,4 @@
-package mipt.baranov.JDBS;
+package mipt.baranov.database.JDBS;
 
 import lombok.AllArgsConstructor;
 import mipt.baranov.util.sql.functional.SqlConsumer;

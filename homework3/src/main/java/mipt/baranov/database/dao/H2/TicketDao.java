@@ -1,8 +1,8 @@
-package mipt.baranov.dao.H2;
+package mipt.baranov.database.dao.H2;
 
 import lombok.AllArgsConstructor;
-import mipt.baranov.JDBS.JdbcTemplate;
-import mipt.baranov.dao.Dao;
+import mipt.baranov.database.JDBS.JdbcTemplate;
+import mipt.baranov.database.dao.Dao;
 import mipt.baranov.entities.Ticket;
 import org.json.JSONObject;
 
@@ -41,7 +41,7 @@ public class TicketDao implements Dao<Ticket> {
     public List<Ticket> getAll() throws SQLException {
         List<Ticket> entities = new ArrayList<>();
         jdbc.executeStatement(statement -> {
-            ResultSet resultSet = statement.executeQuery("select * from airports");
+            ResultSet resultSet = statement.executeQuery("select * from tickets");
             while (resultSet.next()) {
                 entities.add(createEntity(resultSet));
             }
