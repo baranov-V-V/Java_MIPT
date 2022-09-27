@@ -8,7 +8,7 @@ create table airports (
     airport_code VARCHAR(3)      not null,
     airport_name JSON            not null,
     city         JSON            not null,
-    coordinates  GEOMETRY(POINT, 100) not null,
+    coordinates  VARCHAR(128)    not null,
     timezone     VARCHAR(1024)   not null
 ) as select * from csvread('src/main/resources/database/airtrans/airports_data.csv');
 
@@ -26,7 +26,7 @@ create table bookings (
 ) as select * from csvread('src/main/resources/database/airtrans/bookings.csv');
 
 create table flights (
-    flight_id           INTEGER auto_increment   primary key,
+    flight_id           INTEGER                  primary key,
     flight_no           VARCHAR(6)               not null,
     scheduled_departure TIMESTAMP WITH TIME ZONE not null,
     scheduled_arrival   TIMESTAMP WITH TIME ZONE not null,
@@ -34,9 +34,9 @@ create table flights (
     arrival_airport     VARCHAR(3)               not null,
     status              VARCHAR(20)              not null,
     aircraft_code       VARCHAR(3)               not null,
-    actual_departure    TIMESTAMP WITH TIME ZONE,
-    actual_arrival      TIMESTAMP WITH TIME ZONE
-) as select * from csvread('src/main/resources/database/airtrans/flights.csv');
+    actual_departure    TIMESTAMP WITH TIME ZONE null,
+    actual_arrival      TIMESTAMP WITH TIME ZONE null
+) as select * from csvread('src/main/resources/database/airtrans/flights.csv', 'X1,X2,X3,X4,X5,X6,X7,X8,X9,X10', 'charset=UTF-8 fieldSeparator=,');
 
 create table seats (
     aircraft_code   VARCHAR(3)  not null,
@@ -56,5 +56,8 @@ create table tickets (
     book_ref       VARCHAR(6)     not null,
     passenger_id   VARCHAR(20)    not null,
     passenger_name VARCHAR(1024)  not null,
-    contact_data   JSON
+    contact_data   JSON           null
 ) as select * from csvread('src/main/resources/database/airtrans/tickets.csv');
+
+--insert into flights(flight_id, flight_no, scheduled_departure, scheduled_arrival, departure_airport, arrival_airport, status, aircraft_code, actual_departure, actual_arrival) select * from csvread('src/main/resources/database/airtrans/flights.csv');
+--select * from csvread('src/main/resources/database/airtrans/flights.csv');
