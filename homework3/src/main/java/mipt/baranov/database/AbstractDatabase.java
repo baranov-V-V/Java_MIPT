@@ -27,7 +27,7 @@ public abstract class AbstractDatabase implements Database {
 
     @Override
     public void execute(Path sqlFile) throws IOException, SQLException {
-        if (!sqlFile.endsWith(".sql")) {
+        if (!sqlFile.toString().endsWith(".sql")) {
             throw new NonSqlFIleExeption(String.format("File %s expected to have .sql extension",
                                                         sqlFile.getFileName().toString()));
         }

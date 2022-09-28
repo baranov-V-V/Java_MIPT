@@ -8,9 +8,7 @@ import mipt.baranov.util.sql.functional.SqlConsumer;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class H2Database extends AbstractDatabase {
     private final JdbcTemplate jdbc;
@@ -22,11 +20,15 @@ public class H2Database extends AbstractDatabase {
 
         LogManager.getLogManager().addLogger(Logger.getLogger(H2Database.class.getName()));
         dbLogger = LogManager.getLogManager().getLogger(H2Database.class.getName());
+        dbLogger.setLevel(Level.ALL);
+        Handler handler = new ConsoleHandler();
+        handler.setLevel(Level.ALL);
+        dbLogger.addHandler(handler);
     }
 
     @Override
     public void initialize() throws IOException, SQLException {
-        dbLogger.log(Level.INFO, "Calling of empty initialize() method");
+        dbLogger.log(Level.FINE, "Calling of empty initialize() method");
     };
 
     @Override
@@ -41,6 +43,6 @@ public class H2Database extends AbstractDatabase {
 
     @Override
     public void terminate() throws IOException, SQLException {
-        dbLogger.log(Level.INFO, "Calling of empty terminate() method");
+        dbLogger.log(Level.FINE, "Calling of empty terminate() method");
     };
 }

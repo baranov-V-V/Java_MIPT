@@ -17,5 +17,9 @@ public final class Converters {
     }
     */
 
+    public static String getJsonString(String H2JsonString) {
+        return H2JsonString.substring(1, H2JsonString.length() - 1).replace("\\\"", "\"");
+    }
+
     private Converters() {}
 }

@@ -6,13 +6,14 @@ import mipt.baranov.database.dao.Dao;
 import mipt.baranov.entities.Airport;
 import mipt.baranov.util.Point;
 import mipt.baranov.util.sql.H2.Converters;
+import org.h2.util.json.JSONValue;
 import org.json.JSONObject;
+import org.json.JSONString;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.logging.Logger;
 
 @AllArgsConstructor
 public class AirportDao implements Dao<Airport> {
@@ -54,5 +55,43 @@ public class AirportDao implements Dao<Airport> {
                 new Point(0, 0),
                 set.getString(5)
         );
+    }
+
+    public Map<String, List<String>> getCitiesWithManyAirports() throws SQLException {
+        Map<String, List<String>> cities = new HashMap<>();
+
+        jdbc.executeStatement(statement -> {
+            ResultSet resultSet = statement.executeQuery(
+                    "select city, airport_code from airports where\n" +
+                    "    city in (\n" +
+                    "        select city from airports\n" +
+                    "        group by city\n" +
+                    "        having count(airport_code) > 1)");
+
+            while (resultSet.next()) {
+                String airportCode = resultSet.getString(2);
+                //JSONObject city = resultSet.getObject(1, JSONObject.class);
+                //JSONObject city = new JSONObject(resultSet.getString(1));
+
+                //System.out.printf("Json: %s\n", resultSet.getString(1));
+
+                //System.out.println(Converters.getJsonString(resultSet.getString(1)));
+
+                String city = new JSONObject(Converters.getJsonString(resultSet.getString(1))).getString("ru");
+
+                //resultSet.get
+                //String value = jsonObject.getFirst("ru").toString();
+                //System.out.println(value);
+
+                //System.out.printf("got %s %s\n", city, airportCode);
+
+
+                if (!cities.containsKey(airportCode)) {
+                    cities.put(city, new ArrayList<>());
+                }
+                cities.get(city).add(airportCode);
+            }
+        });
+        return cities;
     }
 }

@@ -1,6 +1,7 @@
 package mipt.baranov.database.JDBS;
 
 import lombok.AllArgsConstructor;
+import mipt.baranov.util.sql.functional.ConnectionConsumer;
 import mipt.baranov.util.sql.functional.SqlConsumer;
 import mipt.baranov.util.sql.functional.SqlFunction;
 
@@ -20,14 +21,19 @@ public class JdbcTemplate {
     public <R> R executeStatement(SqlFunction<? super Statement, ? extends R> function) throws SQLException {
         try (Connection connection = connection_pool.getConnection();
              Statement statement = connection.createStatement()) {
-            return function.apply(statement);
+            connection.setAutoCommit(false);
+            R result = function.apply(statement);
+            connection.commit();
+            return result;
         }
     }
 
     public void executeStatement(SqlConsumer<? super Statement> consumer) throws SQLException {
         try (Connection connection = connection_pool.getConnection();
              Statement statement = connection.createStatement()) {
+            connection.setAutoCommit(false);
             consumer.accept(statement);
+            connection.commit();
         }
     }
 
@@ -47,6 +53,12 @@ public class JdbcTemplate {
             connection.setAutoCommit(false);
             consumer.accept(stmt);
             connection.commit();
+        }
+    }
+
+    public void workWithConnection(ConnectionConsumer<? super Connection> consumer) throws SQLException {
+        try (Connection connection = connection_pool.getConnection();) {
+            consumer.accept(connection);
         }
     }
 }

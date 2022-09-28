@@ -21,7 +21,7 @@ public class SeatDao implements Dao<Seat> {
             for (Seat entity : entities) {
                 statement.setString(1, entity.getAircraftCode());
                 statement.setString(2, entity.getSeatNo());
-                statement.setString(3, entity.getFareCondition());
+                statement.setString(3, entity.getFareCondition().getStringType());
                 statement.addBatch();
             }
             statement.executeBatch();
@@ -44,7 +44,7 @@ public class SeatDao implements Dao<Seat> {
         return new Seat(
                 set.getString(1),
                 set.getString(2),
-                set.getString(3)
+                Seat.SeatType.valueOf(set.getString(3))
         );
     }
 }
