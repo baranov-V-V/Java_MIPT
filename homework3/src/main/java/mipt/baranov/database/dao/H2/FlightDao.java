@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -145,9 +146,24 @@ public class FlightDao implements Dao<Flight> {
         return months;
     }
 
-    public void cancelFlightsByAirplaneModel(String model) throws SQLException{
+    public void cancelFlightsByAirplaneModel(String model) throws SQLException {
         jdbc.workWithConnection(connection -> {
             connection.setAutoCommit(false);
+
+            /*
+            ResultSet flightIds = null;
+
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "select flight_id from flights\n" +
+                    "where flights.aircraft_code = ?)")) {
+                statement.setString(1, model);
+                flightIds = statement.executeQuery();
+            }
+
+            try() {
+
+            }
+            */
 
             try(PreparedStatement statement = connection.prepareStatement(
                     "update flights\n" +
@@ -177,6 +193,18 @@ public class FlightDao implements Dao<Flight> {
                 statement.executeUpdate();
             }
             connection.commit();
+        });
+    }
+
+    public void cancelFlightsByTimePeriod(LocalDate begin, LocalDate end) throws SQLException {
+        jdbc.workWithConnection(connection -> {
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "update flights\n" +
+                    "set status = 'Cancelled'\n" +
+                    "where departure_airport ")) {
+
+            }
+
         });
     }
 }

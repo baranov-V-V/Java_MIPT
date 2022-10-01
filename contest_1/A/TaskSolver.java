@@ -6,9 +6,6 @@ public class TaskSolver {
     try (Scanner sc = new Scanner(System.in)) {
       int lenght = sc.nextInt();
 
-      //debug
-      //System.out.println(lenght);
-
       int[] A = new int[lenght];
       int[] B = new int[lenght];
 
@@ -33,12 +30,7 @@ public class TaskSolver {
       }
 
       System.out.printf("%d %d", i0, j0);
-
-
-    } catch (Exception e) {
-      e.printStackTrace();
     }
-
   }
 
   private static void readIntArray(int[] arr, int lenght, Scanner sc) {

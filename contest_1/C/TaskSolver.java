@@ -48,10 +48,7 @@ public class TaskSolver {
       
       System.out.println(target_count);
 
-    } catch (Exception e) {
-      e.printStackTrace();
     }
-
   }
 
   private static void readIntArray(int[] arr, int lenght, Scanner sc) {

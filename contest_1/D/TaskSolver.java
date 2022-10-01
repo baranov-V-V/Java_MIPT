@@ -10,11 +10,7 @@ public class TaskSolver {
       
       System.out.println(findAns(n, k));
 
-    } catch (Exception e) {
-      e.printStackTrace();
     }
-
-
   }
   
   private static int findAns(int n, int k) {

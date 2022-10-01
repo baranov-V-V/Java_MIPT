@@ -5,6 +5,7 @@ import mipt.baranov.database.JDBS.JdbcTemplate;
 import mipt.baranov.database.dao.Dao;
 import mipt.baranov.entities.BoardingPass;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -49,4 +50,39 @@ public class BoardingPassDao implements Dao<BoardingPass> {
                 set.getString(4)
         );
     }
+
+    /*
+    public void addBoardingPass(BoardingPass pass) throws SQLException {
+        jdbc.workWithConnection(connection -> {
+            connection.setAutoCommit(false);
+
+            //checks if flight and seat exists
+            //not sure if this is needed
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "select flight_id from flights\n" +
+                    "where flight_id = ?")) {
+                statement.setInt(1, pass.getFlightId());
+                if (!statement.execute()) {
+                    System.out.println("no flight_id");
+                    return;
+                }
+            }
+
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "select * from seats\n" +
+                            "where seat_no = ? and seats.aircraft_code = (\n" +
+                            "   select flights.aircraft_code from flights\n" +
+                            "       where flights.flight_id = ?")) {
+                statement.setString(1, pass.getSeatNo());
+                statement.setInt(2, pass.getFlightId());
+                if (!statement.execute()) {
+                    throw new
+                }
+            }
+
+                connection.commit();
+        });
+    }
+     */
+
 }

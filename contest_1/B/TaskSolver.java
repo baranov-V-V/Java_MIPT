@@ -11,22 +11,22 @@ public class TaskSolver {
 
       List<Point> points = readPoints(points_num, sc);
 
-      double area = 0;
+      double res = 0;
+	    
+      for (int i = 0; i < points.size(); ++i) {
+		    Point p1, p2;
+        if (i == 0) {
+          p1 = points.get(points.size() - 1);
+        } else {
+          p1 = points.get(i - 1);
+        }
+        p2 = points.get(i);
+		  
+        res += (p1.x - p2.x) * (p1.y + p2.y);
+	    }
 
-      for (int i = 0; i < points_num - 1; ++i) {
-        area += calcPolygonArea(points.get(i), points.get(i + i));
-      }
-
-      System.out.println(area / 2);
-
-    } catch (Exception e) {
-      e.printStackTrace();
+      System.out.println(Math.abs(res) / 2);
     }
-
-  }
-
-  private static double calcPolygonArea(Point a, Point b) {
-    return (b.getX() - a.getX()) * (b.getY() + a.getY()) * 0.5;
   }
 
   private static List<Point> readPoints(int points_num, Scanner sc) {
@@ -42,20 +42,11 @@ public class TaskSolver {
 }
 
 class Point {
-  private final int coord_x;
-  private final int coord_y;
+  public final int x;
+  public final int y;
 
   Point(int x, int y) {
-    coord_x = x;
-    coord_y = y;
+    this.x = x;
+    this.y = y;
   }
-  
-  int getX() {
-    return coord_x;
-  }
-
-  int getY() {
-    return coord_y;
-  }
-
 }
