@@ -3,11 +3,13 @@ package mipt.baranov;
 import mipt.baranov.database.AirtransH2Database;
 import mipt.baranov.database.dao.H2.AirportDao;
 import mipt.baranov.database.dao.H2.FlightDao;
+import mipt.baranov.excel.Presenters;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,23 +31,30 @@ public final class App {
 
         database.execute(Paths.get("src/main/resources/database/queries/dao/H2/1.sql"));
 
-        //AirportDao portDao = new AirportDao(database.getConnection());
-        //Map<String, List<String>> cities = portDao.getCitiesWithManyAirports();
-
-        FlightDao flightDao = new FlightDao(database.getConnection());
-        //List<Map.Entry<String, Integer>> cities = flightDao.getMostCancelledCities();
-        //List<Map.Entry<Month, Integer>> months = flightDao.getCancelledByMonth();
-        String model = "763";
-        flightDao.cancelFlightsByAirplaneModel(model);
-        database.getConnection().executePreparedStatement("select status from flights\n" +
-                    "where aircraft_code = ?", statement -> {
-            statement.setString(1, model);
-            statement.execute();
-            ResultSet resultSet = statement.getResultSet();
-            while (resultSet.next()) {
-                System.out.printf("Status: %s", resultSet.getString(1));
+        AirportDao portDao = new AirportDao(database.getConnection());
+        Map<String, List<String>> cities = portDao.getCitiesWithManyAirports();
+        cities.forEach((a, b) -> {
+            System.out.println(a);
+            for (String s : b) {
+                System.out.println(s);
             }
         });
+        Presenters.presentCitiesWithManyAirports(cities, Paths.get("cities.xls"));
+
+        //FlightDao flightDao = new FlightDao(database.getConnection());
+        //List<Map.Entry<String, Integer>> cities = flightDao.getMostCancelledCities();
+        //List<Map.Entry<Month, Integer>> months = flightDao.getCancelledByMonth();
+        //String model = "763";
+        //flightDao.cancelFlightsByAirplaneModel(model);
+        //database.getConnection().executePreparedStatement("select status from flights\n" +
+        //            "where aircraft_code = ?", statement -> {
+        //    statement.setString(1, model);
+        //    statement.execute();
+        //    ResultSet resultSet = statement.getResultSet();
+        //    while (resultSet.next()) {
+        //        System.out.printf("Status: %s", resultSet.getString(1));
+        //    }
+        //});
 
         database.terminate();
         /*

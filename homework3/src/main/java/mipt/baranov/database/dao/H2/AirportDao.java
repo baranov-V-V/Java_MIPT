@@ -83,10 +83,10 @@ public class AirportDao implements Dao<Airport> {
                 //String value = jsonObject.getFirst("ru").toString();
                 //System.out.println(value);
 
-                //System.out.printf("got %s %s\n", city, airportCode);
+                System.out.printf("got %s %s\n", city, airportCode);
 
 
-                if (!cities.containsKey(airportCode)) {
+                if (!cities.containsKey(city)) {
                     cities.put(city, new ArrayList<>());
                 }
                 cities.get(city).add(airportCode);
