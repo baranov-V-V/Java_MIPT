@@ -1,9 +1,11 @@
 package mipt.baranov.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
 @Data
+@AllArgsConstructor
 public class Seat {
     public enum SeatType {
         Economy("Economy"),

@@ -9,14 +9,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public final class Presenters {
+public final class ExcelPresenters {
     static final float MAX_FONT_SIZE = 1.45f;
     static final int HEADER_FONT_HEIGHT = 20;
     static final int CELLS_FONT_HEIGHT = 15;
 
-    private Presenters() {}
+    private ExcelPresenters() {}
 
     public static void presentCitiesWithManyAirports(Map<String, List<String>> data, Path path) throws FileNotFoundException, IOException {
         ExcelTemplate.write(path, workbook -> {

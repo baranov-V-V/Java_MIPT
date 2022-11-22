@@ -1,0 +1,38 @@
+STAGE A
+DONE
+
+STAGE B
+1+
+2+
+3-
+4+
+5-
+6+-?
+7-
+8+-?
+
+STAGE C
+charts template done
+Actual charts:
+1
+2
+3
+4
+5
+
+excel template done
+Actual Excel:
+4+
+5-
+7-
+
+STAGE D
+1
+a
+2
+    b
+3
+    a
+    b
+
+(need to write test and gitlab ci-cd)

@@ -50,8 +50,8 @@ public class AirportDao implements Dao<Airport> {
     private Airport createEntity(ResultSet set) throws SQLException {
         return new Airport(
                 set.getString(1),
-                new JSONObject(set.getString(2)),
-                new JSONObject(set.getString(3)),
+                set.getString(3),
+                set.getString(2),
                 new Point(0, 0),
                 set.getString(5)
         );

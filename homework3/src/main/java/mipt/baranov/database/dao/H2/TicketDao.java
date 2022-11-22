@@ -55,7 +55,7 @@ public class TicketDao implements Dao<Ticket> {
                 set.getString(2),
                 set.getString(3),
                 set.getString(4),
-                Objects.nonNull(set.getString(5)) ? new JSONObject(set.getString(5)) : null
+                Objects.nonNull(set.getString(5)) ? set.getString(5) : null
         );
     }
 }

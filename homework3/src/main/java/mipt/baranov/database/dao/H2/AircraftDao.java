@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mipt.baranov.database.JDBS.JdbcTemplate;
 import mipt.baranov.database.dao.Dao;
 import mipt.baranov.entities.Aircraft;
+import mipt.baranov.util.sql.H2.Converters;
 import org.json.JSONObject;
 
 import java.sql.ResultSet;
@@ -43,7 +44,7 @@ public class AircraftDao implements Dao<Aircraft> {
     private Aircraft createEntity(ResultSet set) throws SQLException {
         return new Aircraft(
                 set.getString(1),
-                new JSONObject(set.getString(2)),
+                Converters.getJsonString(set.getString(2)),
                 set.getInt(3)
         );
     }

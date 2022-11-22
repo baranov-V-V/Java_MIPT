@@ -3,17 +3,13 @@ package mipt.baranov;
 import mipt.baranov.database.AirtransH2Database;
 import mipt.baranov.database.dao.H2.AirportDao;
 import mipt.baranov.database.dao.H2.FlightDao;
-import mipt.baranov.excel.Presenters;
-import org.json.JSONObject;
+import mipt.baranov.excel.ExcelPresenters;
+import mipt.baranov.graphics.ChartPresenters;
 
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Month;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +18,6 @@ public final class App {
     }
 
     public static void main(String[] args) throws URISyntaxException, SQLException, IOException {
-        //JSONObject obj = new JSONObject("{\"en\": \"Moscow\", \"ru\": \"Москва\"}");
-
-        //System.out.println(obj.getString("ru"));
-
         AirtransH2Database database = new AirtransH2Database();
         database.initialize();
 
@@ -39,7 +31,10 @@ public final class App {
                 System.out.println(s);
             }
         });
-        Presenters.presentCitiesWithManyAirports(cities, Paths.get("cities.xls"));
+        ExcelPresenters.presentCitiesWithManyAirports(cities, Paths.get("cities.xls"));
+
+        FlightDao flightDao = new FlightDao(database.getConnection());
+        ChartPresenters.chartCancelledFlightsByMonth(flightDao.getCancelledByMonth());
 
         //FlightDao flightDao = new FlightDao(database.getConnection());
         //List<Map.Entry<String, Integer>> cities = flightDao.getMostCancelledCities();
