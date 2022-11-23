@@ -23,6 +23,7 @@ public final class App {
 
         database.execute(Paths.get("src/main/resources/database/queries/dao/H2/1.sql"));
 
+        /*
         AirportDao portDao = new AirportDao(database.getConnection());
         Map<String, List<String>> cities = portDao.getCitiesWithManyAirports();
         cities.forEach((a, b) -> {

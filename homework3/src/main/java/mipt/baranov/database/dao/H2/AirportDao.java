@@ -3,6 +3,7 @@ package mipt.baranov.database.dao.H2;
 import lombok.AllArgsConstructor;
 import mipt.baranov.database.JDBS.JdbcTemplate;
 import mipt.baranov.database.dao.Dao;
+import mipt.baranov.database.dto.MultiAirportCity;
 import mipt.baranov.entities.Airport;
 import mipt.baranov.util.Point;
 import mipt.baranov.util.sql.H2.Converters;
@@ -46,7 +47,7 @@ public class AirportDao implements Dao<Airport> {
         return entities;
     }
 
-    //WORKING WRONTTTGGG
+    //WORKING WRONTTTGGG fix point
     private Airport createEntity(ResultSet set) throws SQLException {
         return new Airport(
                 set.getString(1),
@@ -57,34 +58,50 @@ public class AirportDao implements Dao<Airport> {
         );
     }
 
+    public List<MultiAirportCity> getCitiesWithManyAirports() throws SQLException {
+        List<MultiAirportCity> cities = new ArrayList<>();
+
+        Map<String, MultiAirportCity> citiesMap = new HashMap<>();
+
+        jdbc.executeStatement(statement -> {
+            ResultSet resultSet = statement.executeQuery(
+                    "select city, airport_code from airports where\n" +
+                            "    city in (\n" +
+                            "        select city from airports\n" +
+                            "        group by city\n" +
+                            "        having count(airport_code) > 1)");
+            String currCity = null;
+            while (resultSet.next()) {
+                String airportCode = resultSet.getString(2);
+                String city = new JSONObject(Converters.getJsonString(resultSet.getString(1))).getString("ru");
+
+                System.out.printf("got %s %s\n", city, airportCode);
+
+                if (!citiesMap.containsKey(city)) {
+                    citiesMap.put(city, new MultiAirportCity(city, new ArrayList<>()));
+                }
+                citiesMap.get(city).getAirportCodes().add(airportCode);
+            }
+        });
+        return cities;
+    }
+
+     /*
     public Map<String, List<String>> getCitiesWithManyAirports() throws SQLException {
         Map<String, List<String>> cities = new HashMap<>();
 
         jdbc.executeStatement(statement -> {
             ResultSet resultSet = statement.executeQuery(
                     "select city, airport_code from airports where\n" +
-                    "    city in (\n" +
-                    "        select city from airports\n" +
-                    "        group by city\n" +
-                    "        having count(airport_code) > 1)");
+                            "    city in (\n" +
+                            "        select city from airports\n" +
+                            "        group by city\n" +
+                            "        having count(airport_code) > 1)");
 
             while (resultSet.next()) {
                 String airportCode = resultSet.getString(2);
-                //JSONObject city = resultSet.getObject(1, JSONObject.class);
-                //JSONObject city = new JSONObject(resultSet.getString(1));
-
-                //System.out.printf("Json: %s\n", resultSet.getString(1));
-
-                //System.out.println(Converters.getJsonString(resultSet.getString(1)));
-
                 String city = new JSONObject(Converters.getJsonString(resultSet.getString(1))).getString("ru");
-
-                //resultSet.get
-                //String value = jsonObject.getFirst("ru").toString();
-                //System.out.println(value);
-
                 System.out.printf("got %s %s\n", city, airportCode);
-
 
                 if (!cities.containsKey(city)) {
                     cities.put(city, new ArrayList<>());
@@ -94,4 +111,5 @@ public class AirportDao implements Dao<Airport> {
         });
         return cities;
     }
+    */
 }

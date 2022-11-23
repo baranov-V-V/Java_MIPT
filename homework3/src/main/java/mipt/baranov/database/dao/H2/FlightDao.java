@@ -3,6 +3,9 @@ package mipt.baranov.database.dao.H2;
 import lombok.AllArgsConstructor;
 import mipt.baranov.database.JDBS.JdbcTemplate;
 import mipt.baranov.database.dao.Dao;
+import mipt.baranov.database.dto.CancelledNumFlightsByMonth;
+import mipt.baranov.database.dto.CancelledFlightCities;
+import mipt.baranov.database.dto.FlightsNumByWeekday;
 import mipt.baranov.entities.Flight;
 import mipt.baranov.util.sql.H2.Converters;
 import org.json.JSONObject;
@@ -10,7 +13,6 @@ import org.json.JSONObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZonedDateTime;
@@ -79,8 +81,8 @@ public class FlightDao implements Dao<Flight> {
         );
     }
 
-    public List<Map.Entry<String, Integer>> getMostCancelledCities() throws SQLException {
-        List<Map.Entry<String, Integer>> cities = new ArrayList<>();
+    public List<CancelledFlightCities> getMostCancelledCities() throws SQLException {
+        List<CancelledFlightCities> cities = new ArrayList<>();
 
         jdbc.executeStatement(statement -> {
             ResultSet resultSet = statement.executeQuery(
@@ -106,15 +108,15 @@ public class FlightDao implements Dao<Flight> {
 
                 System.out.printf("got %s %d\n", city, num);
 
-                cities.add(new AbstractMap.SimpleImmutableEntry<>(city, num));
+                cities.add(new CancelledFlightCities(city, num));
             }
         });
 
         return cities;
     }
 
-    public List<Map.Entry<Month, Integer>> getCancelledByMonth() throws SQLException {
-        List<Map.Entry<Month, Integer>> months = new ArrayList<>();
+    public List<CancelledNumFlightsByMonth> getCancelledByMonth() throws SQLException {
+        List<CancelledNumFlightsByMonth> cancelledFligths = new ArrayList<>();
 
         jdbc.executeStatement(statement -> {
             ResultSet resultSet = statement.executeQuery(
@@ -131,19 +133,53 @@ public class FlightDao implements Dao<Flight> {
 
                 //System.out.println(Converters.getJsonString(resultSet.getString(1)));
 
-                Integer monthNo = resultSet.getInt(1);
-                Integer cancelledNo = resultSet.getInt(2);
+                int monthNo = resultSet.getInt(1);
+                int cancelledNo = resultSet.getInt(2);
                 //resultSet.get
                 //String value = jsonObject.getFirst("ru").toString();
                 //System.out.println(value);
 
                 System.out.printf("got %d %d\n", monthNo, cancelledNo);
 
-                months.add(new AbstractMap.SimpleImmutableEntry<>(Month.of(monthNo), cancelledNo));
+                cancelledFligths.add(new CancelledNumFlightsByMonth(Month.of(monthNo), cancelledNo));
             }
         });
 
-        return months;
+        return cancelledFligths;
+    }
+
+    public List<FlightsNumByWeekday> getFlightsNumInCityByWeekday(String cityName) throws SQLException {
+        List<FlightsNumByWeekday> arrivalNum = new ArrayList<>();
+
+        //-----????
+        jdbc.executeStatement(statement -> {
+            ResultSet resultSet = statement.executeQuery(
+                    "select extract(MONTH from scheduled_departure), count(*) from flights\n" +
+                            "where status = 'Cancelled'\n" +
+                            "group by extract(MONTH from scheduled_departure)\n" +
+                            "order by extract(MONTH from scheduled_departure) asc");
+
+            while (resultSet.next()) {
+                //JSONObject city = resultSet.getObject(1, JSONObject.class);
+                //JSONObject city = new JSONObject(resultSet.getString(1));
+
+                //System.out.printf("Json: %s\n", resultSet.getString(1));
+
+                //System.out.println(Converters.getJsonString(resultSet.getString(1)));
+
+                int monthNo = resultSet.getInt(1);
+                int cancelledNo = resultSet.getInt(2);
+                //resultSet.get
+                //String value = jsonObject.getFirst("ru").toString();
+                //System.out.println(value);
+
+                System.out.printf("got %d %d\n", monthNo, cancelledNo);
+
+                //arrivalNum.add(new CancelledNumFlightsByMonth(Month.of(monthNo), cancelledNo));
+            }
+        });
+
+        return arrivalNum;
     }
 
     public void cancelFlightsByAirplaneModel(String model) throws SQLException {
