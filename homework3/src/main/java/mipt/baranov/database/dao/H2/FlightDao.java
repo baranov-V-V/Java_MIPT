@@ -8,6 +8,7 @@ import mipt.baranov.entities.Flight;
 import mipt.baranov.util.sql.H2.Converters;
 import org.json.JSONObject;
 
+import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -187,6 +188,18 @@ public class FlightDao implements Dao<Flight> {
         //сделать 2 запроса: один на получение кодов аэропортов, другой чтобы уже попарсить
 
         //-----???? write prepared statement and andd how to check == with JSON
+        jdbc.workWithConnection(connection -> {
+            connection.setAutoCommit(false);
+
+            List<String> aircraftCodes = new ArrayList<>();
+
+
+
+            //Array airportCodes = connection.createArrayOf("VARCHAR(3)", );
+
+            connection.commit();
+        });
+
         jdbc.executeStatement(statement -> {
             ResultSet resultSet = statement.executeQuery(
                     "select extract(DAY from scheduled_departure), count(*) from flights\n" +
