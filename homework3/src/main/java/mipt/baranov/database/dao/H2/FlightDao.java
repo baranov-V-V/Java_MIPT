@@ -3,9 +3,7 @@ package mipt.baranov.database.dao.H2;
 import lombok.AllArgsConstructor;
 import mipt.baranov.database.JDBS.JdbcTemplate;
 import mipt.baranov.database.dao.Dao;
-import mipt.baranov.database.dto.CancelledNumFlightsByMonth;
-import mipt.baranov.database.dto.CancelledFlightCities;
-import mipt.baranov.database.dto.FlightsNumByWeekday;
+import mipt.baranov.database.dto.*;
 import mipt.baranov.entities.Flight;
 import mipt.baranov.util.sql.H2.Converters;
 import org.json.JSONObject;
@@ -115,8 +113,43 @@ public class FlightDao implements Dao<Flight> {
         return cities;
     }
 
-    public List<CancelledNumFlightsByMonth> getCancelledByMonth() throws SQLException {
-        List<CancelledNumFlightsByMonth> cancelledFligths = new ArrayList<>();
+    public List<SmallestFligthByCity> getSmallestFlights() throws SQLException {
+        List<SmallestFligthByCity> flights = new ArrayList<>();
+
+        //ВСЕ Переписать тут невернооо!!
+        jdbc.executeStatement(statement -> {
+            ResultSet resultSet = statement.executeQuery(
+                    "select airports.city, count(*) from flights\n" +
+                            "join airports on airports.airport_code = flights.departure_airport\n" +
+                            "where status = 'Cancelled'\n" +
+                            "group by airports.city\n" +
+                            "order by count(*) desc");
+
+            while (resultSet.next()) {
+                //JSONObject city = resultSet.getObject(1, JSONObject.class);
+                //JSONObject city = new JSONObject(resultSet.getString(1));
+
+                //System.out.printf("Json: %s\n", resultSet.getString(1));
+
+                //System.out.println(Converters.getJsonString(resultSet.getString(1)));
+
+                String city = new JSONObject(Converters.getJsonString(resultSet.getString(1))).getString("ru");
+                Integer num = resultSet.getInt(2);
+                //resultSet.get
+                //String value = jsonObject.getFirst("ru").toString();
+                //System.out.println(value);
+
+                System.out.printf("got %s %d\n", city, num);
+
+                //flights.add(new CancelledFlightCities(city, num));
+            }
+        });
+
+        return flights;
+    }
+
+    public List<CancelledCountByMonth> getCancelledByMonth() throws SQLException {
+        List<CancelledCountByMonth> cancelledFligths = new ArrayList<>();
 
         jdbc.executeStatement(statement -> {
             ResultSet resultSet = statement.executeQuery(
@@ -141,7 +174,7 @@ public class FlightDao implements Dao<Flight> {
 
                 System.out.printf("got %d %d\n", monthNo, cancelledNo);
 
-                cancelledFligths.add(new CancelledNumFlightsByMonth(Month.of(monthNo), cancelledNo));
+                cancelledFligths.add(new CancelledCountByMonth(Month.of(monthNo), cancelledNo));
             }
         });
 
@@ -151,13 +184,17 @@ public class FlightDao implements Dao<Flight> {
     public List<FlightsNumByWeekday> getFlightsNumInCityByWeekday(String cityName) throws SQLException {
         List<FlightsNumByWeekday> arrivalNum = new ArrayList<>();
 
-        //-----????
+        //сделать 2 запроса: один на получение кодов аэропортов, другой чтобы уже попарсить
+
+        //-----???? write prepared statement and andd how to check == with JSON
         jdbc.executeStatement(statement -> {
             ResultSet resultSet = statement.executeQuery(
-                    "select extract(MONTH from scheduled_departure), count(*) from flights\n" +
-                            "where status = 'Cancelled'\n" +
-                            "group by extract(MONTH from scheduled_departure)\n" +
-                            "order by extract(MONTH from scheduled_departure) asc");
+                    "select extract(DAY from scheduled_departure), count(*) from flights\n" +
+                            "where arrival_airport in (\n" +
+                                "select airport_code from airports\n" +
+                                "where" +
+                            ")\n" +
+                        "group by extract(DAY from scheduled_departure)");
 
             while (resultSet.next()) {
                 //JSONObject city = resultSet.getObject(1, JSONObject.class);
@@ -186,25 +223,23 @@ public class FlightDao implements Dao<Flight> {
         jdbc.workWithConnection(connection -> {
             connection.setAutoCommit(false);
 
-            /*
-            ResultSet flightIds = null;
-
-            try(PreparedStatement statement = connection.prepareStatement(
-                    "select flight_id from flights\n" +
-                    "where flights.aircraft_code = ?)")) {
-                statement.setString(1, model);
-                flightIds = statement.executeQuery();
-            }
-
-            try() {
-
-            }
-            */
-
             try(PreparedStatement statement = connection.prepareStatement(
                     "update flights\n" +
                     "set status = 'Cancelled'\n" +
                     "where aircraft_code = ?")) {
+                statement.setString(1, model);
+                statement.executeUpdate();
+            }
+
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "delete from bookings\n" +
+                    "where booking.book_ref in\n" +
+                        "select book_ref from tickets\n" +
+                        "where tickets.ticket_no in (\n" +
+                            "   select ticket_flights.ticket_no from ticket_flights\n" +
+                            "   where ticket_flights.flight_id in (\n" +
+                            "       select flights.flight_id from flights\n" +
+                            "       where flights.aircraft_code = ?))")) {
                 statement.setString(1, model);
                 statement.executeUpdate();
             }
@@ -228,19 +263,36 @@ public class FlightDao implements Dao<Flight> {
                 statement.setString(1, model);
                 statement.executeUpdate();
             }
+
             connection.commit();
         });
     }
+    //write убыток этого
+    public List<LossesByWeekday> cancelFlightsByTimePeriod(LocalDate begin, LocalDate end, String cityName) throws SQLException {
+        List<LossesByWeekday> losses = new ArrayList<>();
+        //сделать 2 запроса: один на получение кодов аэропортов, другой чтобы уже попарсить
 
-    public void cancelFlightsByTimePeriod(LocalDate begin, LocalDate end) throws SQLException {
+        //-----???? write prepared statement and andd how to check == with JSON = ANY(?), ? = setArray
+
+
         jdbc.workWithConnection(connection -> {
+            //connection.createArrayOf() // делатем все тут.
+
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "update flights\n" +
+                            "set status = 'Cancelled'\n" +
+                            "where departure_airport = ANY(?) or arrival_airport = ANY(?)")) {
+                //statement.setArray();
+            }
+
             try(PreparedStatement statement = connection.prepareStatement(
                     "update flights\n" +
                     "set status = 'Cancelled'\n" +
-                    "where departure_airport ")) {
-
+                    "where departure_airport = ANY(?) or arrival_airport = ANY(?)")) {
+                //statement.setArray();
             }
 
         });
+    return losses;
     }
 }

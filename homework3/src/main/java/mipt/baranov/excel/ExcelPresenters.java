@@ -1,9 +1,6 @@
 package mipt.baranov.excel;
 
-import mipt.baranov.database.dto.CancelledFlightCities;
-import mipt.baranov.database.dto.CancelledNumFlightsByMonth;
-import mipt.baranov.database.dto.FlightsNumByWeekday;
-import mipt.baranov.database.dto.MultiAirportCity;
+import mipt.baranov.database.dto.*;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.FileNotFoundException;
@@ -121,7 +118,7 @@ public final class ExcelPresenters {
         });
     }
 
-    public static void presentCancelledFilghtsByMonth(List<CancelledNumFlightsByMonth> months, Path path) throws FileNotFoundException, IOException {
+    public static void presentCancelledFilghtsByMonth(List<CancelledCountByMonth> months, Path path) throws FileNotFoundException, IOException {
         ExcelTemplate.write(path, workbook -> {
             final int columnNum = 2;
             ColumnsSizeCounter counter = new ColumnsSizeCounter(columnNum);
@@ -141,6 +138,34 @@ public final class ExcelPresenters {
                 dataCell = dataRow.createCell(1);
                 dataCell.setCellStyle(cellStyle);
                 dataCell.setCellValue(city.getCancelledNum().toString());
+                counter.recalc(1, dataCell);
+            });
+
+            sheet.setColumnWidth(0, (int) (MAX_FONT_SIZE * (float) counter.get(0) * 256));
+            sheet.setColumnWidth(1, (int) (MAX_FONT_SIZE * (float) counter.get(1) * 256));
+        });
+    }
+
+    public static void presentLossesByWeekday(List<LossesByWeekday> days, String cityName, Path path) throws FileNotFoundException, IOException {
+        ExcelTemplate.write(path, workbook -> {
+            final int columnNum = 2;
+            ColumnsSizeCounter counter = new ColumnsSizeCounter(columnNum);
+
+            CellStyle cellStyle = prepareWorkbook(workbook, "Убытки в городе " + cityName, List.of("День", "Убытки"), counter);
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            days.forEach(day -> {
+                Row dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
+
+                Cell dataCell = dataRow.createCell(0);
+                dataCell.setCellStyle(cellStyle);
+                dataCell.setCellValue(day.getDay().toString());
+                counter.recalc(0, dataCell);
+
+                dataCell = dataRow.createCell(1);
+                dataCell.setCellStyle(cellStyle);
+                dataCell.setCellValue(day.getLossAmount().toString());
                 counter.recalc(1, dataCell);
             });
 
@@ -174,7 +199,41 @@ public final class ExcelPresenters {
                 dataCell = dataRow.createCell(3);
                 dataCell.setCellStyle(cellStyle);
                 dataCell.setCellValue(flightDay.getArrivalNum().toString());
+                counter.recalc(2, dataCell);
+            });
+
+            sheet.setColumnWidth(0, (int) (MAX_FONT_SIZE * (float) counter.get(0) * 256));
+            sheet.setColumnWidth(1, (int) (MAX_FONT_SIZE * (float) counter.get(1) * 256));
+            sheet.setColumnWidth(2, (int) (MAX_FONT_SIZE * (float) counter.get(2) * 256));
+        });
+    }
+
+    public static void presentSmallestFlightsByCity(List<SmallestFligthByCity> flights, Path path) throws FileNotFoundException, IOException {
+        ExcelTemplate.write(path, workbook -> {
+            final int columnNum = 3;
+            ColumnsSizeCounter counter = new ColumnsSizeCounter(columnNum);
+
+            CellStyle cellStyle = prepareWorkbook(workbook, "Самые короткие рейсы", List.of("Город", "Пунтк прибытия", "Длительность"), counter);
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            flights.forEach(flightDay -> {
+                Row dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
+
+                Cell dataCell = dataRow.createCell(0);
+                dataCell.setCellStyle(cellStyle);
+                dataCell.setCellValue(flightDay.getCityName());
+                counter.recalc(0, dataCell);
+
+                dataCell = dataRow.createCell(1);
+                dataCell.setCellStyle(cellStyle);
+                dataCell.setCellValue(flightDay.getDestName());
                 counter.recalc(1, dataCell);
+
+                dataCell = dataRow.createCell(3);
+                dataCell.setCellStyle(cellStyle);
+                dataCell.setCellValue(flightDay.getFlightDuration().toString());
+                counter.recalc(2, dataCell);
             });
 
             sheet.setColumnWidth(0, (int) (MAX_FONT_SIZE * (float) counter.get(0) * 256));

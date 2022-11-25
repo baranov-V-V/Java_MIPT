@@ -58,4 +58,8 @@ public class TicketDao implements Dao<Ticket> {
                 Objects.nonNull(set.getString(5)) ? set.getString(5) : null
         );
     }
+
+    public void addTicket() {
+        //do something
+    }
 }
