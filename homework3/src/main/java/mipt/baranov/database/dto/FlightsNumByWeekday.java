@@ -7,8 +7,7 @@ import java.time.DayOfWeek;
 
 @Data
 public class FlightsNumByWeekday {
-    private final @NonNull String cityName;
     private final DayOfWeek day;
-    private final Integer arrivalNum;
-    private final Integer departureNum;
+    private Integer arrivalNum;
+    private Integer departureNum;
 }

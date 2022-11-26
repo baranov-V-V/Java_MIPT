@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -55,7 +57,7 @@ public class BusinessLogic {
         FlightDao flightDao = new FlightDao(database.getConnection());
 
         List<FlightsNumByWeekday> flights = flightDao.getFlightsNumInCityByWeekday("Moscow");
-        ExcelPresenters.presentFlightsNumByCity(flights, Paths.get("flights_in_moscow.xls"));
+        ExcelPresenters.presentFlightsNumByCity(flights, "Москва", Paths.get("flights_in_moscow.xls"));
         ChartPresenters.chartFlightsNumByWeekday(flights);
     }
 
@@ -67,7 +69,7 @@ public class BusinessLogic {
     public void doTask7(LocalDate begin, LocalDate end) throws SQLException, IOException {
         FlightDao flightDao = new FlightDao(database.getConnection());
 
-        List<LossesByWeekday> losses = flightDao.cancelFlightsByTimePeriod(begin, end, "Moscow");
+        List<LossesByWeekday> losses = flightDao.cancelFlightsByTimePeriod(LocalDateTime.of(begin, LocalTime.MIN), LocalDateTime.of(end, LocalTime.MAX), "Moscow");
         ExcelPresenters.presentLossesByWeekday(losses, "Москва", Paths.get("losses_of_moscow_flights.xls"));
         ChartPresenters.chartLossesByWeekday(losses);
     }

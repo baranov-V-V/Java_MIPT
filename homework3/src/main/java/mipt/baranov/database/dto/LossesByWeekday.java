@@ -6,7 +6,6 @@ import java.time.DayOfWeek;
 
 @Data
 public class LossesByWeekday {
-    private final @NonNull String city;
     private final DayOfWeek day;
-    private final Double lossAmount;
+    private Double lossAmount;
 }

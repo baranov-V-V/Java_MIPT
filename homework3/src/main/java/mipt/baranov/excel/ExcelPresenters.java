@@ -174,12 +174,12 @@ public final class ExcelPresenters {
         });
     }
 
-    public static void presentFlightsNumByCity(List<FlightsNumByWeekday> flights, Path path) throws FileNotFoundException, IOException {
+    public static void presentFlightsNumByCity(List<FlightsNumByWeekday> flights, String cityName, Path path) throws FileNotFoundException, IOException {
         ExcelTemplate.write(path, workbook -> {
             final int columnNum = 3;
             ColumnsSizeCounter counter = new ColumnsSizeCounter(columnNum);
 
-            CellStyle cellStyle = prepareWorkbook(workbook, "Рейсы в городе " + flights.get(0).getCityName(), List.of("День недели", "Количество вылетающих", "Количество прилетающих"), counter);
+            CellStyle cellStyle = prepareWorkbook(workbook, "Рейсы в городе " + cityName, List.of("День недели", "Количество вылетающих", "Количество прилетающих"), counter);
 
             Sheet sheet = workbook.getSheetAt(0);
 

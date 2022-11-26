@@ -7,14 +7,10 @@ import mipt.baranov.database.dto.*;
 import mipt.baranov.entities.Flight;
 import mipt.baranov.util.sql.H2.Converters;
 import org.json.JSONObject;
+import org.json.JSONString;
 
-import java.sql.Array;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.ZonedDateTime;
+import java.sql.*;
+import java.time.*;
 import java.util.*;
 
 @AllArgsConstructor
@@ -183,53 +179,52 @@ public class FlightDao implements Dao<Flight> {
     }
 
     public List<FlightsNumByWeekday> getFlightsNumInCityByWeekday(String cityName) throws SQLException {
-        List<FlightsNumByWeekday> arrivalNum = new ArrayList<>();
+        List<FlightsNumByWeekday> weekdays = List.of(   new FlightsNumByWeekday(DayOfWeek.MONDAY),
+                                                        new FlightsNumByWeekday(DayOfWeek.TUESDAY),
+                                                        new FlightsNumByWeekday(DayOfWeek.WEDNESDAY),
+                                                        new FlightsNumByWeekday(DayOfWeek.THURSDAY),
+                                                        new FlightsNumByWeekday(DayOfWeek.FRIDAY),
+                                                        new FlightsNumByWeekday(DayOfWeek.SATURDAY),
+                                                        new FlightsNumByWeekday(DayOfWeek.SUNDAY));
 
-        //сделать 2 запроса: один на получение кодов аэропортов, другой чтобы уже попарсить
-
-        //-----???? write prepared statement and andd how to check == with JSON
         jdbc.workWithConnection(connection -> {
             connection.setAutoCommit(false);
 
-            List<String> aircraftCodes = new ArrayList<>();
+            AirportDao airportDao = new AirportDao(jdbc);
+            List<String> airportCodes = airportDao.getListOfAirportCodes(cityName);
 
+            Array airportCodesArr = connection.createArrayOf("VARCHAR(3)", airportCodes.toArray());
 
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "select count(*) from flights\n" +
+                        "where arrival_airport = ANY(?) and extract(ISO_DAY_OF_WEEK from scheduled_arrival) = ?\n"
+            )) {
+                for (FlightsNumByWeekday weekday : weekdays) {
+                    statement.setArray(1, airportCodesArr);
+                    statement.setInt(2, weekday.getDay().getValue());
+                    ResultSet resultSet = statement.executeQuery();
+                    resultSet.next();
+                    weekday.setArrivalNum(resultSet.getInt(1));
+                }
+            }
 
-            //Array airportCodes = connection.createArrayOf("VARCHAR(3)", );
+            try(PreparedStatement statement = connection.prepareStatement(
+                    "select count(*) from flights\n" +
+                            "where departure_airport = ANY(?) and extract(ISO_DAY_OF_WEEK from scheduled_departure) = ?\n"
+            )) {
+                for (FlightsNumByWeekday weekday : weekdays) {
+                    statement.setArray(1, airportCodesArr);
+                    statement.setInt(2, weekday.getDay().getValue());
+                    ResultSet resultSet = statement.executeQuery();
+                    resultSet.next();
+                    weekday.setDepartureNum(resultSet.getInt(1));
+                }
+            }
 
             connection.commit();
         });
 
-        jdbc.executeStatement(statement -> {
-            ResultSet resultSet = statement.executeQuery(
-                    "select extract(DAY from scheduled_departure), count(*) from flights\n" +
-                            "where arrival_airport in (\n" +
-                                "select airport_code from airports\n" +
-                                "where" +
-                            ")\n" +
-                        "group by extract(DAY from scheduled_departure)");
-
-            while (resultSet.next()) {
-                //JSONObject city = resultSet.getObject(1, JSONObject.class);
-                //JSONObject city = new JSONObject(resultSet.getString(1));
-
-                //System.out.printf("Json: %s\n", resultSet.getString(1));
-
-                //System.out.println(Converters.getJsonString(resultSet.getString(1)));
-
-                int monthNo = resultSet.getInt(1);
-                int cancelledNo = resultSet.getInt(2);
-                //resultSet.get
-                //String value = jsonObject.getFirst("ru").toString();
-                //System.out.println(value);
-
-                System.out.printf("got %d %d\n", monthNo, cancelledNo);
-
-                //arrivalNum.add(new CancelledNumFlightsByMonth(Month.of(monthNo), cancelledNo));
-            }
-        });
-
-        return arrivalNum;
+        return weekdays;
     }
 
     public void cancelFlightsByAirplaneModel(String model) throws SQLException {
@@ -280,32 +275,68 @@ public class FlightDao implements Dao<Flight> {
             connection.commit();
         });
     }
-    //write убыток этого
-    public List<LossesByWeekday> cancelFlightsByTimePeriod(LocalDate begin, LocalDate end, String cityName) throws SQLException {
-        List<LossesByWeekday> losses = new ArrayList<>();
+
+    public List<LossesByWeekday> cancelFlightsByTimePeriod(LocalDateTime begin, LocalDateTime end, String cityName) throws SQLException {
+        List<LossesByWeekday> weekdays = List.of(   new LossesByWeekday(DayOfWeek.MONDAY),
+                                                    new LossesByWeekday(DayOfWeek.TUESDAY),
+                                                    new LossesByWeekday(DayOfWeek.WEDNESDAY),
+                                                    new LossesByWeekday(DayOfWeek.THURSDAY),
+                                                    new LossesByWeekday(DayOfWeek.FRIDAY),
+                                                    new LossesByWeekday(DayOfWeek.SATURDAY),
+                                                    new LossesByWeekday(DayOfWeek.SUNDAY));
         //сделать 2 запроса: один на получение кодов аэропортов, другой чтобы уже попарсить
 
         //-----???? write prepared statement and andd how to check == with JSON = ANY(?), ? = setArray
 
+        //получаем всех флайт id
+        //идем в тикет_флайтс и считаем убытки по sum(amount)
 
         jdbc.workWithConnection(connection -> {
             //connection.createArrayOf() // делатем все тут.
 
+            AirportDao airportDao = new AirportDao(jdbc);
+            List<String> airportCodes = airportDao.getListOfAirportCodes(cityName);
+
+            Array airportCodesArr = connection.createArrayOf("VARCHAR(3)", airportCodes.toArray());
+
             try(PreparedStatement statement = connection.prepareStatement(
                     "update flights\n" +
                             "set status = 'Cancelled'\n" +
-                            "where departure_airport = ANY(?) or arrival_airport = ANY(?)")) {
-                //statement.setArray();
+                            "where (departure_airport = ANY(?) and scheduled_departure <= ? and scheduled_departure >= ?) or\n" +
+                            "   (arrival_airport = ANY(?) and scheduled_arrival <= ? and scheduled_arrival >= ?)"
+            )) {
+                statement.setArray(1, airportCodesArr);
+                statement.setTimestamp(2, Timestamp.valueOf(end));
+                statement.setTimestamp(3, Timestamp.valueOf(begin));
+                statement.setArray(4, airportCodesArr);
+                statement.setTimestamp(5, Timestamp.valueOf(end));
+                statement.setTimestamp(6, Timestamp.valueOf(begin));
+                statement.executeUpdate();
             }
 
             try(PreparedStatement statement = connection.prepareStatement(
-                    "update flights\n" +
-                    "set status = 'Cancelled'\n" +
-                    "where departure_airport = ANY(?) or arrival_airport = ANY(?)")) {
-                //statement.setArray();
+                    "select sum(amount) from ticket_flights\n" +
+                        "where flight_id in (\n" +
+                            "select flight_id from flights where\n" +
+                                "(departure_airport = ANY(?) and scheduled_departure <= ? and scheduled_departure >= ?) or\n" +
+                                "(arrival_airport = ANY(?) and scheduled_arrival <= ? and scheduled_arrival >= ?)\n" +
+                            ")"
+            )) {
+                for (LossesByWeekday weekday : weekdays) {
+                    statement.setArray(1, airportCodesArr);
+                    statement.setTimestamp(2, Timestamp.valueOf(end));
+                    statement.setTimestamp(3, Timestamp.valueOf(begin));
+                    statement.setArray(4, airportCodesArr);
+                    statement.setTimestamp(5, Timestamp.valueOf(end));
+                    statement.setTimestamp(6, Timestamp.valueOf(begin));
+                    ResultSet resultSet = statement.executeQuery();
+                    resultSet.next();
+                    weekday.setLossAmount(resultSet.getDouble(1));
+                }
             }
 
         });
-    return losses;
+
+    return weekdays;
     }
 }

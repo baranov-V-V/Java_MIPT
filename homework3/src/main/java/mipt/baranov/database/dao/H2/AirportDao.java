@@ -11,6 +11,7 @@ import org.h2.util.json.JSONValue;
 import org.json.JSONObject;
 import org.json.JSONString;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -84,6 +85,23 @@ public class AirportDao implements Dao<Airport> {
             }
         });
         return cities;
+    }
+
+    public List<String> getListOfAirportCodes(String city) throws SQLException {
+        List<String> airportCodes = new ArrayList<>();
+
+        jdbc.executeStatement(statement -> {
+            ResultSet resultSet = statement.executeQuery("select city, airport_code from airports;");
+            while (resultSet.next()) {
+                JSONObject cityJson = new JSONObject(Converters.getJsonString(resultSet.getString(1)));
+                System.out.println(cityJson.toString());
+                if (cityJson.get("en").equals(city)) {
+                    airportCodes.add(resultSet.getString(2));
+                }
+            }
+        });
+
+        return airportCodes;
     }
 
      /*
